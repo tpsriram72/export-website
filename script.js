@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Collect values
                 const payload = {
-                    _subject: binding.subject,
-                    _honey: '', // Honeypot field to prevent spam
+                    access_key: "e5a4bd54-7681-4095-acf7-f921510fbe27",
+                    subject: binding.subject,
                 };
                 
                 // Find all inputs, textareas, selects
@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 
-                // Dispatch the Email via FormSubmit AJAX in background
-                fetch("https://formsubmit.co/ajax/topselectionexport@gmail.com", {
+                // Dispatch the Email via Web3Forms AJAX in background
+                fetch("https://api.web3forms.com/submit", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
@@ -112,18 +112,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         throw new Error("Server response error");
                     }
                 })
-                .then(data => {
+                 .then(data => {
+                    // Lock height to prevent page layout jumping
+                    const parent = formEl.parentElement;
+                    if (parent) {
+                        parent.style.minHeight = `${parent.offsetHeight}px`;
+                    }
+
                     // Show success screen on the original page replacing form contents
                     formEl.innerHTML = `
                         <div class="success-message-box" style="text-align: center; padding: 40px 20px;">
                             <div style="font-size: 3.5rem; margin-bottom: 20px; color: #25D366;">✅</div>
                             <h4 style="font-size: 1.4rem; margin-bottom: 12px; color: var(--primary);">Thank You!</h4>
                             <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; max-width: 450px; margin: 0 auto 20px;">
-                                Your request has been sent successfully. We will reach out to you soon!
+                                Your request has been sent successfully. We will respond within 24 hours via WhatsApp or email.
                             </p>
                             <button class="btn btn-outline" style="padding: 10px 22px; font-size: 0.9rem;" onclick="window.location.reload()">Send Another Query</button>
                         </div>
                     `;
+
+                    // Smoothly scroll the success message into view
+                    formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 })
                 .catch(error => {
                     console.error("Submission error:", error);
